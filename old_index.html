@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chemical Production Tracking</title>
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background-image: url(" chemical tacker.jpeg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: center;
+  text-align: center;
+  padding: 20px;
+  color: #000;
+  position: relative;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.6);
+  z-index: -1;
+}
+
+  
+  h1 {
+    color: #2a4d69;
+  }
+  select, input, button {
+    padding: 10px;
+    margin: 8px;
+    font-size: 16px;
+  }
+  .result {
+    margin-top: 20px;
+    font-weight: bold;
+    font-size: 18px;
+    color: green;
+    border:transparent;
+    padding: 15px;
+    background:transparent; 
+    border-radius: 8px;
+  }
+  label {
+    font-weight: bold;
+    display: inline-block;
+    width: 160px;
+    text-align: right;
+  }
+  table {
+    width: 90%;
+    margin: 20px auto;
+    border-collapse: collapse;
+    background:transparent;
+  }
+  th, td {
+    border: 1px solid #ccc;
+    padding: 10px;
+    text-align: center;
+  }
+  th {
+    background: #2a4d69;
+    color: transparent ;
+  }
+  tr:nth-child(even) {
+    background: #f2f2f2;
+  }
+  #chartContainer {
+    width: 90%;
+    margin: 40px auto;
+    background: transparent;
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+  }
+</style>
+</head>
+<body>
+
+<h1>🏭 Chemical Production System</h1>
+<p>Enter batch details and select raw materials:</p>
+
+<div>
+  <label>Batch Number:</label>
+  <select id="batchNo">
+    <option value="">--Select Batch--</option>
+    <option value="B001">B001</option>
+    <option value="B002">B002</option>
+    <option value="B003">B003</option>
+    <option value="B004">B004</option>
+  </select><br>
+
+  <label>Production Date:</label>
+  <input type="date" id="prodDate"><br>
+
+  <label>Quantity (Kg/L):</label>
+  <input type="number" id="quantity" placeholder="e.g. 500"><br>
+
+  <label>Raw Material 1:</label>
+  <select id="raw1">
+    <option value="">--Choose--</option>
+    <option value="Sulfuric Acid">Sulfuric Acid</option>
+    <option value="Sodium Hydroxide">Sodium Hydroxide</option>
+    <option value="Hydrochloric Acid">Hydrochloric Acid</option>
+    <option value="Ammonia">Ammonia</option>
+  </select><br>
+
+  <label>Raw Material 2:</label>
+  <select id="raw2">
+    <option value="">--Choose--</option>
+    <option value="Sulfuric Acid">Sulfuric Acid</option>
+    <option value="Sodium Hydroxide">Sodium Hydroxide</option>
+    <option value="Hydrochloric Acid">Hydrochloric Acid</option>
+    <option value="Ammonia">Ammonia</option>
+  </select><br><br>
+
+  <button onclick="produce()">✅ Produce Final Product</button>
+</div>
+
+<div class="result" id="resultBox"></div>
+
+<h2>📊 Production History</h2>
+<table id="historyTable">
+  <thead>
+    <tr>
+      <th>Batch No</th>
+      <th>Date</th>
+      <th>Quantity</th>
+      <th>Raw Materials</th>
+      <th>Final Product</th>
+      <th>Efficiency</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+
+<div id="chartContainer">
+  <canvas id="productionChart"></canvas>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+let chart;
+const batchLabels = [];
+const quantities = [];
+const efficiencies = [];
+
+function produce() {
+  const batch = document.getElementById("batchNo").value;
+  const date = document.getElementById("prodDate").value;
+  const quantity = parseFloat(document.getElementById("quantity").value);
+  const r1 = document.getElementById("raw1").value;
+  const r2 = document.getElementById("raw2").value;
+
+  if (!batch || !date || !quantity || !r1 || !r2) {
+    alert("⚠️ Please fill all fields!");
+    return;
+  }
+
+  // Determine final product
+  let product;
+  if ((r1 === "Sulfuric Acid" && r2 === "Sodium Hydroxide") || (r1 === "Sodium Hydroxide" && r2 === "Sulfuric Acid")) {
+    product = "Detergent (Sodium Lauryl Sulfate)";
+  } else if ((r1 === "Ammonia" && r2 === "Sulfuric Acid") || (r1 === "Sulfuric Acid" && r2 === "Ammonia")) {
+    product = "Fertilizer (Ammonium Sulfate)";
+  } else if ((r1 === "Sodium Hydroxide" && r2 === "Hydrochloric Acid") || (r1 === "Hydrochloric Acid" && r2 === "Sodium Hydroxide")) {
+    product = "Salt (Sodium Chloride) + Water";
+  } else {
+    product = "⚗️ Unknown Reaction";
+  }
+
+  // Efficiency (90–99%)
+  const efficiency = (90 + Math.random() * 9).toFixed(2);
+
+  // Display results
+  document.getElementById("resultBox").innerHTML = `
+    <p><b>Batch:</b> ${batch}</p>
+    <p><b>Date:</b> ${date}</p>
+    <p><b>Quantity:</b> ${quantity} Kg/L</p>
+    <p><b>Raw Materials:</b> ${r1} + ${r2}</p>
+    <p><b>Final Product:</b> ${product}</p>
+    <p><b>Efficiency:</b> ${efficiency}%</p>
+  `;
+
+  // Add row to table
+  const tableBody = document.querySelector("#historyTable tbody");
+  const row = tableBody.insertRow();
+  row.innerHTML = `
+    <td>${batch}</td>
+    <td>${date}</td>
+    <td>${quantity} Kg/L</td>
+    <td>${r1} + ${r2}</td>
+    <td>${product}</td>
+    <td>${efficiency}%</td>
+  `;
+
+  // Update Chart Data
+  batchLabels.push(batch);
+  quantities.push(quantity);
+  efficiencies.push(parseFloat(efficiency));
+
+  // Create or update chart
+  const ctx = document.getElementById("productionChart").getContext("2d");
+  if (chart) {
+    chart.data.labels = batchLabels;
+    chart.data.datasets[0].data = quantities;
+    chart.data.datasets[1].data = efficiencies;
+    chart.update();
+  } else {
+    chart = new Chart(ctx, {
+      type: "bar",
+      data: {
+        labels: batchLabels,
+        datasets: [
+          {
+            label: "Quantity (Kg/L)",
+            data: quantities,
+            backgroundColor: "rgba(42, 77, 105, 0.7)",
+          },
+          {
+            label: "Efficiency (%)",
+            data: efficiencies,
+            backgroundColor: "rgba(76, 175, 80, 0.7)",
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: { beginAtZero: true }
+        }
+      }
+    });
+  }
+
+  // Clear inputs after producing
+  document.getElementById("batchNo").value = "";
+  document.getElementById("prodDate").value = "";
+  document.getElementById("quantity").value = "";
+  document.getElementById("raw1").value = "";
+  document.getElementById("raw2").value = "";
+}
+</script>
+
+</body>
+</html>
