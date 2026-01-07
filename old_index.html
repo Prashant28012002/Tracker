@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chemical Production Tracking</title>
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background-image: url(" chemical tacker.jpeg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: center;
+  text-align: center;
+  padding: 20px;
+  color: #000;
+  position: relative;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.6);
+  z-index: -1;
+}
+
+  
+  h1 {
+    color: #2a4d69;
+  }
+  select, input, button {
+    padding: 10px;
+    margin: 8px;
+    font-size: 16px;
+  }
+  .result {
+    margin-top: 20px;
+    font-weight: bold;
+    font-size: 18px;
+    color: green;
+    border:transparent;
+    padding: 15px;
+    background:transparent; 
+    border-radius: 8px;
+  }
+  label {
+    font-weight: bold;
+    display: inline-block;
+    width: 160px;
+    text-align: right;
+  }
+  table {
+    width: 90%;
+    margin: 20px auto;
+    border-collapse: collapse;
+    background:transparent;
+  }
+  th, td {
+    border: 1px solid #ccc;
+    padding: 10px;
+    text-align: center;
+  }
+  th {
+    background: #2a4d69;
+    color: transparent ;
+  }
+  tr:nth-child(even) {
+    background: #f2f2f2;
+  }
+  #chartContainer {
+    width: 90%;
+    margin: 40px auto;
+    background: transparent;
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+  }
+</style>
+</head>
+<body>
+
+<h1>🏭 Chemical Production System</h1>
+<p>Enter batch details and select raw materials:</p>
+
+<div>
+  <label>Batch Number:</label>
+  <select id="batchNo">
+    <option value="">--Select Batch--</option>
+    <option value="B001">B001</option>
+    <option value="B002">B002</option>
+    <option value="B003">B003</option>
+    <option value="B004">B004</option>
+  </select><br>
+
+  <label>Production Date:</label>
+  <input type="date" id="prodDate"><br>
+
+  <label>Quantity (Kg/L):</label>
+  <input type="number" id="quantity" placeholder="e.g. 500"><br>
+
+  <label>Raw Material 1:</label>
+<select id="raw1">
+  <option value="">--Choose--</option>
+  <option value="Sulfuric Acid">Sulfuric Acid</option>
+  <option value="Sodium Hydroxide">Sodium Hydroxide</option>
+  <option value="Hydrochloric Acid">Hydrochloric Acid</option>
+  <option value="Ammonia">Ammonia</option>
+  <option value="Hydrogen Peroxide">Hydrogen Peroxide</option>
+  <option value="Silver Nitrate">Silver Nitrate</option>
+  <option value="Copper Sulfate">Copper Sulfate</option>
+  <option value="Zinc">Zinc</option>
+  <option value="Ammonium Chloride">Ammonium Chloride</option>
+</select><br>
+
+<label>Raw Material 2:</label>
+<select id="raw2">
+  <option value="">--Choose--</option>
+  <option value="Sulfuric Acid">Sulfuric Acid</option>
+  <option value="Sodium Hydroxide">Sodium Hydroxide</option>
+  <option value="Hydrochloric Acid">Hydrochloric Acid</option>
+  <option value="Ammonia">Ammonia</option>
+  <option value="Hydrogen Peroxide">Hydrogen Peroxide</option>
+  <option value="Silver Nitrate">Silver Nitrate</option>
+  <option value="Copper Sulfate">Copper Sulfate</option>
+  <option value="Zinc">Zinc</option>
+  <option value="Ammonium Chloride">Ammonium Chloride</option>
+</select><br><br>
+
+
+  <button onclick="produce()">✅ Produce Final Product</button>
+</div>
+
+<div class="result" id="resultBox"></div>
+
+<h2>📊 Production History</h2>
+<table id="historyTable">
+  <thead>
+    <tr>
+      <th>Batch No</th>
+      <th>Date</th>
+      <th>Quantity</th>
+      <th>Raw Materials</th>
+      <th>Final Product</th>
+      <th>Efficiency</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+
+<div id="chartContainer">
+  <canvas id="productionChart"></canvas>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+let chart;
+const batchLabels = [];
+const quantities = [];
+const efficiencies = [];
+
+function produce() {
+  const batch = document.getElementById("batchNo").value;
+  const date = document.getElementById("prodDate").value;
+  const quantity = parseFloat(document.getElementById("quantity").value);
+  const r1 = document.getElementById("raw1").value;
+  const r2 = document.getElementById("raw2").value;
+
+  if (!batch || !date || !quantity || !r1 || !r2) {
+    alert("⚠️ Please fill all fields!");
+    return;
+  }
+
+  // Determine final product
+ let product;
+if (
+  (r1 === "Sulfuric Acid" && r2 === "Sodium Hydroxide") ||
+  (r1 === "Sodium Hydroxide" && r2 === "Sulfuric Acid")
+) {
+  product = "Detergent (Sodium Lauryl Sulfate)";
+} else if (
+  (r1 === "Ammonia" && r2 === "Sulfuric Acid") ||
+  (r1 === "Sulfuric Acid" && r2 === "Ammonia")
+) {
+  product = "Fertilizer (Ammonium Sulfate)";
+} else if (
+  (r1 === "Sodium Hydroxide" && r2 === "Hydrochloric Acid") ||
+  (r1 === "Hydrochloric Acid" && r2 === "Sodium Hydroxide")
+) {
+  product = "Salt (Sodium Chloride) + Water";
+} else if (
+  (r1 === "Ammonia" && r2 === "Hydrochloric Acid") ||
+  (r1 === "Hydrochloric Acid" && r2 === "Ammonia")
+) {
+  product = "Ammonium Chloride";
+} else if (
+  (r1 === "Sulfuric Acid" && r2 === "Hydrogen Peroxide") ||
+  (r1 === "Hydrogen Peroxide" && r2 === "Sulfuric Acid")
+) {
+  product = "Peracetic Acid";
+} else if (
+  (r1 === "Sodium Hydroxide" && r2 === "Ammonium Chloride") ||
+  (r1 === "Ammonium Chloride" && r2 === "Sodium Hydroxide")
+) {
+  product = "Ammonia Gas + Salt (Sodium Chloride)";
+} else if (
+  (r1 === "Hydrochloric Acid" && r2 === "Silver Nitrate") ||
+  (r1 === "Silver Nitrate" && r2 === "Hydrochloric Acid")
+) {
+  product = "Silver Chloride Precipitate";
+} else if (
+  (r1 === "Copper Sulfate" && r2 === "Zinc") ||
+  (r1 === "Zinc" && r2 === "Copper Sulfate")
+) {
+  product = "Copper Metal + Zinc Sulfate";
+} else {
+  product = "⚗️ Unknown Reaction";
+}
+
+
+  // Efficiency (90–99%)
+  const efficiency = (90 + Math.random() * 9).toFixed(2);
+
+  // Display results
+  document.getElementById("resultBox").innerHTML = `
+    <p><b>Batch:</b> ${batch}</p>
+    <p><b>Date:</b> ${date}</p>
+    <p><b>Quantity:</b> ${quantity} Kg/L</p>
+    <p><b>Raw Materials:</b> ${r1} + ${r2}</p>
+    <p><b>Final Product:</b> ${product}</p>
+    <p><b>Efficiency:</b> ${efficiency}%</p>
+  `;
+
+  // Add row to table
+  const tableBody = document.querySelector("#historyTable tbody");
+  const row = tableBody.insertRow();
+  row.innerHTML = `
+    <td>${batch}</td>
+    <td>${date}</td>
+    <td>${quantity} Kg/L</td>
+    <td>${r1} + ${r2}</td>
+    <td>${product}</td>
+    <td>${efficiency}%</td>
+  `;
+
+  // Update Chart Data
+  batchLabels.push(batch);
+  quantities.push(quantity);
+  efficiencies.push(parseFloat(efficiency));
+
+  // Create or update chart
+const ctx = document.getElementById("productionChart").getContext("2d");
+
+if (chart) {
+  chart.data.labels = batchLabels;
+  chart.data.datasets[0].data = quantities;
+  chart.data.datasets[1].data = efficiencies;
+  chart.update();
+} else {
+  // Calculate categoryPercentage for ~1 inch width per bar
+  const inchInPixels = 96; // approx. 1 inch
+  const canvasWidth = ctx.canvas.width;
+  const totalBars = batchLabels.length * 2; // 2 datasets per category
+  const barWidthRatio = (inchInPixels * totalBars) / canvasWidth;
+
+  chart = new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels: batchLabels,
+      datasets: [
+        {
+          label: "Quantity (Kg/L)",
+          data: quantities,
+          backgroundColor: "rgba(255, 99, 132, 0.7)",
+          borderColor: "rgba(255, 99, 132, 1)",
+          borderWidth: 1
+        },
+        {
+          label: "Efficiency (%)",
+          data: efficiencies,
+          backgroundColor: "rgba(75, 192, 192, 0.7)",
+          borderColor: "rgba(75, 192, 192, 1)",
+          borderWidth: 1
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { position: 'top' },
+        tooltip: { mode: 'index', intersect: false }
+      },
+      scales: {
+        x: {
+          stacked: false,
+          ticks: { maxRotation: 45, minRotation: 0 },
+          grid: { display: false },
+          categoryPercentage: barWidthRatio, // set approx 1 inch per bar
+          barPercentage: 1
+        },
+        y: { beginAtZero: true }
+      }
+    }
+  });
+}
+
+  // Clear inputs after producing
+  document.getElementById("batchNo").value = "";
+  document.getElementById("prodDate").value = "";
+  document.getElementById("quantity").value = "";
+  document.getElementById("raw1").value = "";
+  document.getElementById("raw2").value = "";
+}
+</script>
+
+</body>
+</html>

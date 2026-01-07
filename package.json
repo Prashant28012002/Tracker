@@ -1,0 +1,17 @@
+{
+  "name": "chem-tracker",
+  "version": "1.0.0",
+  "description": "ChemTracker Login Signup Backend",
+  "main": "server.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.5",
+    "express": "^4.22.1",
+    "mysql2": "^3.16.0"
+  }
+}

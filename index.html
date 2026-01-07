@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Welcome - Production Tracker</title>
+  <link rel="stylesheet" href="front style.css">
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav>
+    <div class="logo">🌿 Chem Tracker</div>
+    <ul>
+      <li><a href="safety.html">Safety</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="login.html">Login</a></li>
+    </ul>
+  </nav>
+
+  <!-- Main Container -->
+<div class="container">
+  <h1>🚀 Welcome to Production Tracking System</h1>
+  <p>Monitor raw materials, track outputs, and calculate efficiency in real time with ease.</p>
+  <button onclick="location.href='login.html'">Enter System</button>
+</div>
+
+  <!-- Floating dots -->
+  <div class="dot" style="width:10px; height:10px; top:20%; left:15%; animation-delay:0s;"></div>
+  <div class="dot" style="width:15px; height:15px; top:50%; left:25%; animation-delay:2s;"></div>
+  <div class="dot" style="width:8px; height:8px; top:30%; left:70%; animation-delay:1s;"></div>
+  <div class="dot" style="width:12px; height:12px; top:65%; left:60%; animation-delay:3s;"></div>
+
+  <!-- Chat Assistant -->
+  <div class="chat-icon" id="chatIcon">💬</div>
+
+  <div class="chat-box" id="chatBox">
+    <div class="chat-header">🤖 Chem Assistant</div>
+    <div class="chat-body" id="chatBody">
+      <div class="bot-message chat-message">
+        Hello! I’m your chemical production assistant. How can I help you today?
+      </div>
+    </div>
+    <div class="chat-input">
+      <input type="text" id="userInput" placeholder="Type your question...">
+      <button id="sendBtn">Send</button>
+    </div>
+  </div>
+
+  <script src="front.js"></script>
+</body>
+</html>

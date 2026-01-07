@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>About - ChemTracker</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(270deg, #1e3c72, #2a5298, #1e3c72);
+      background-size: 600% 600%;
+      animation: gradientBG 15s ease infinite;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 40px;
+    }
+
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .container {
+      background: rgba(255,255,255,0.12);
+      padding: 40px;
+      max-width: 800px;
+      border-radius: 20px;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.5);
+      backdrop-filter: blur(12px);
+      animation: fadeInUp 1s ease forwards;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 48px;
+      margin-bottom: 20px;
+      text-shadow: 0 4px 15px rgba(0,0,0,0.7);
+    }
+
+    p {
+      font-size: 20px;
+      line-height: 1.8;
+      text-align: justify;
+      text-shadow: 0 2px 5px rgba(0,0,0,0.4);
+    }
+
+    ul {
+      margin: 20px 0 0 20px;
+      font-size: 20px;
+      line-height: 1.8;
+    }
+
+    li {
+      margin-bottom: 10px;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media screen and (max-width: 768px) {
+      .container {
+        padding: 25px;
+      }
+      h1 {
+        font-size: 36px;
+      }
+      p, ul {
+        font-size: 18px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🌱 About ChemTracker</h1>
+    <p>
+      ChemTracker is a modern Production Tracking System designed for chemical companies to efficiently manage and monitor their production workflow. The system helps track the raw materials used, the output produced, and calculate efficiency in real time. It simplifies reporting and provides insights to optimize productivity.
+    </p>
+    <p><strong>Key Features:</strong></p>
+    <ul>
+      <li>Record and track daily production data including raw material usage and output.</li>
+      <li>Calculate production efficiency automatically.</li>
+      <li>View production history in a clean, tabular format.</li>
+      <li>User-friendly interface with responsive design for all devices.</li>
+      <li>Fast, browser-based data entry with optional database storage.</li>
+    </ul>
+    <p>
+      ChemTracker ensures that chemical production processes are transparent, measurable, and easy to optimize for better productivity and reduced waste.
+    </p>
+  </div>
+</body>
+</html>
